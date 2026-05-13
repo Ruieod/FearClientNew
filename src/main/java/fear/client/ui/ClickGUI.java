@@ -7,18 +7,20 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import fear.client.module.Module;
 import fear.client.module.ModuleManager;
+import fear.client.module.combat.KillAura;
 import java.awt.Color;
 import java.util.List;
 
 public class ClickGUI extends Screen {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
-    private int panelX = 80, panelY = 30, panelW = 300, panelH = 350;
+    private int panelX = 80, panelY = 30, panelW = 300, panelH = 400;
     private boolean dragging = false;
     private int dragOffX, dragOffY;
     private int selectedTab = 0;
     private String[] tabs = {"COMBAT", "MOVEMENT", "VISUAL", "WORLD", "MISC"};
     private Module.Category[] cats = {Module.Category.COMBAT, Module.Category.MOVEMENT, Module.Category.VISUAL, Module.Category.WORLD, Module.Category.MISC};
     private int scroll = 0;
+    private Module selectedModule = null;
 
     public ClickGUI() { super(Text.literal("FearClient")); }
 
@@ -31,7 +33,7 @@ public class ClickGUI extends Screen {
         if (btn == 0 && my >= panelY + 30 && my <= panelY + 48) {
             int tabW = panelW / tabs.length;
             for (int i = 0; i < tabs.length; i++) {
-                if (mx >= panelX + i * tabW && mx <= panelX + (i + 1) * tabW) { selectedTab = i; scroll = 0; return true; }
+                if (mx >= panelX + i * tabW && mx <= panelX + (i + 1) * tabW) { selectedTab = i; scroll = 0; selectedModule = null; return true; }
             }
         }
         // Модули
@@ -41,7 +43,7 @@ public class ClickGUI extends Screen {
                 int y = panelY + 55 + i * 22 - scroll;
                 if (y < panelY + 50 || y > panelY + panelH) continue;
                 if (mx >= panelX + 5 && mx <= panelX + panelW - 5 && my >= y && my <= y + 20) {
-                    mods.get(i).toggle(); return true;
+                    if (btn == 0) { mods.get(i).toggle(); return true; }
                 }
             }
         }
@@ -68,27 +70,22 @@ public class ClickGUI extends Screen {
         this.renderDarkening(ctx);
         int alpha = 230;
 
-        // Фон панели
         ctx.fill(panelX, panelY, panelX + panelW, panelY + panelH, new Color(15, 15, 22, alpha).getRGB());
-        // Заголовок
         ctx.fill(panelX, panelY, panelX + panelW, panelY + 25, new Color(25, 25, 35, alpha).getRGB());
         ctx.drawHorizontalLine(panelX, panelX + panelW, panelY + 24, new Color(200, 30, 30).getRGB());
         String title = "FEAR CLIENT v1.0";
         ctx.drawTextWithShadow(textRenderer, title, panelX + panelW/2 - textRenderer.getWidth(title)/2, panelY + 8, new Color(255, 50, 50).getRGB());
 
-        // Вкладки
         int tabW = panelW / tabs.length;
         for (int i = 0; i < tabs.length; i++) {
             int tabX = panelX + i * tabW;
             boolean hovered = mx >= tabX && mx <= tabX + tabW && my >= panelY + 30 && my <= panelY + 48;
             boolean sel = i == selectedTab;
             ctx.fill(tabX, panelY + 30, tabX + tabW, panelY + 48, sel ? new Color(200, 30, 30, 200).getRGB() : (hovered ? new Color(50, 50, 60, 200).getRGB() : new Color(30, 30, 40, 200).getRGB()));
-            String tabName = tabs[i];
-            ctx.drawTextWithShadow(textRenderer, tabName, tabX + tabW/2 - textRenderer.getWidth(tabName)/2, panelY + 38, Color.WHITE.getRGB());
+            ctx.drawTextWithShadow(textRenderer, tabs[i], tabX + tabW/2 - textRenderer.getWidth(tabs[i])/2, panelY + 38, Color.WHITE.getRGB());
         }
         ctx.drawHorizontalLine(panelX, panelX + panelW, panelY + 48, new Color(200, 30, 30).getRGB());
 
-        // Модули
         ctx.enableScissor(panelX, panelY + 50, panelX + panelW, panelY + panelH);
         List<Module> mods = ModuleManager.getByCategory(cats[selectedTab]);
         for (int i = 0; i < mods.size(); i++) {
@@ -104,10 +101,8 @@ public class ClickGUI extends Screen {
             ctx.drawTextWithShadow(textRenderer, state, panelX + panelW - 10 - textRenderer.getWidth(state), y + 6, stateCol);
         }
         ctx.disableScissor();
-
-        // Низ
         ctx.fill(panelX, panelY + panelH, panelX + panelW, panelY + panelH + 2, new Color(200, 30, 30, 200).getRGB());
-        ctx.drawTextWithShadow(textRenderer, "Right Shift - hide", panelX + 5, panelY + panelH + 8, new Color(150, 150, 150).getRGB());
+        ctx.drawTextWithShadow(textRenderer, "RMB - settings", panelX + 5, panelY + panelH + 8, new Color(150, 150, 150).getRGB());
     }
 
     @Override
