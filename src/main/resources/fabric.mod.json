@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"fearclient","version":"1.0.0","name":"FearClient","mixins":["fearclient.mixins.json"],"depends":{"fabricloader":">=0.15.0","minecraft":"1.21.4"},"entrypoints":{"client":["fear.client.Main"]}}
