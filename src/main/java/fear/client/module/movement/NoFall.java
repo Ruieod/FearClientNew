@@ -8,7 +8,7 @@ public class NoFall extends Module {
     public void onTick() {
         if (mc.player == null) return;
         if (mc.player.fallDistance > 2.5f) {
-            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true, true));
             mc.player.fallDistance = 0;
         }
     }

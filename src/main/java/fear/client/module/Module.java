@@ -1,4 +1,5 @@
 package fear.client.module;
+import net.minecraft.client.gui.DrawContext;
 public class Module {
     public String name, description;
     public Category category;
@@ -11,5 +12,6 @@ public class Module {
     public void onEnable() {}
     public void onDisable() {}
     public void onTick() {}
+    public void onRender(DrawContext ctx) {}
     public enum Category { COMBAT, MOVEMENT, VISUAL, WORLD, MISC }
 }
