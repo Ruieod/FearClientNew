@@ -1,1 +1,1 @@
-{"required":true,"package":"fear.client.mixin","compatibilityLevel":"JAVA_17","client":["MixinInGameHud","MixinKeyboard","MixinClientPlayerEntity"]}
+{"required":true,"package":"fear.client.mixin","compatibilityLevel":"JAVA_17","client":["MixinInGameHud","MixinClientPlayerInteractionManager","MixinEntity","MixinKeyboard","MixinClientPlayerEntity","MixinKeyboard","MixinClientPlayerEntity"]}
